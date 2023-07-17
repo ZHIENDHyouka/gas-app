@@ -24,3 +24,16 @@ export function getDeviceAllInfo() {
 		method: 'get',
 	})
 }
+
+// 发送用户反馈
+export function submitFeedbackInfo(username,userId,describe) {
+    return Request({
+        url:'manager/submitFeedbackInfo',
+        method:'post',
+        data: {
+            userId:userId,
+            userName:username,
+            problemDescribe:describe
+        }
+    })
+}

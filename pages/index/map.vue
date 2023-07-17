@@ -3,11 +3,18 @@
 		<view>
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
 				@scroll="scroll" class="scroll-Y">
-
-
-
-
-
+				<template>
+					<view>
+						<view class="tarea"
+							style="width: 100%; height: 300rpx;padding-right: 40rpx;box-sizing: border-box;">
+							<textarea placeholder="请输入反馈信息"
+								style="width: 100%;height: 100%;border: 1rpx solid #cccccc; border-radius: 5rpx;padding: 20rpx;auto-height"
+								v-model="value"></textarea>
+						</view>
+						
+						<button type="primary" @click="getFeedback()">提交反馈</button>
+					</view>
+				</template>
 			</scroll-view>
 		</view>
 
@@ -29,6 +36,7 @@
 </template>
 
 <script>
+	import {submitFeedbackInfo} from '../../network/api.js'
 	export default {
 		data() {
 			return {
@@ -47,7 +55,8 @@
 					name: 'C'
 				}],
 				loadFontColor: '#409EFF',
-				destroyFontColor: '#989898'
+				destroyFontColor: '#989898',
+				value: ''
 			}
 		},
 		methods: {
@@ -61,6 +70,31 @@
 			upper: function(e) {
 				console.log(e)
 			},
+			getFeedback:function(){
+				const res = getApp().globalData.text;
+				const username = res.data.username;
+				const userId = res.data.managerId;
+				const describe = this.value
+				submitFeedbackInfo(username,userId,describe).then(res=>{
+					console.log(res.data.code)
+					if (res.data.code === 0) {
+						this.value='';
+						uni.showToast({
+							title: "提交失败,请重试!",
+							duration: 1500,
+							icon: 'error',
+						})
+					} else if (res.data.code === 1) {
+						this.value='';
+						uni.showToast({
+						    title: '提交成功',
+						    icon: 'success',
+						    duration: 2000
+						})
+					} 
+				})
+				
+			}
 		},
 
 	}

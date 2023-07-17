@@ -23,7 +23,7 @@
 				<view class="forgotBtn" @click="change" v-show="!isLogin">
 					<text style="color: #409EFF;">登陆</text>
 				</view>
-			</view>v
+			</view>
 		</view>
 	</view>
 
@@ -79,6 +79,7 @@
 								title: msg,
 								duration: 1000,
 								success() {
+									getApp().globalData.text=res.data;
 									// 页面跳转
 									uni.redirectTo({
 										url: '../index/device',
