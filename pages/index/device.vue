@@ -1,26 +1,24 @@
 <template>
 	<view class="content">
-		<view >
-			<scroll-view :style="{height:screenHeight + 'px'}" :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lower"
-				@scroll="scroll">
-				<uni-list>
-					<view v-for="(item,index) in deviceList" :key="index" class="view_tupian_wenzi">
-						<view class="view_wenzi2">
-							<text>设备编号</text>
-							<text class="text_small">{{item.deviceName}}</text>
-						</view>
-						<view>
-							<uni-badge v-show="item.alarmCount!==0" @click="onClick" class="uni-badge-left-margin"
-								:text="item.alarmCount" absolute="rightTop" max-num:99 :offset="[-55, -35]" />
-						</view>
-						<view>
-							<switch class="uni-badge-left-margin" :checked="item.status"
-								@change="switchChange($event,index)" />
-						</view>
+		<scroll-view :style="{height:screenHeight + 'px'}" :scroll-top="scrollTop" scroll-y="true"
+			@scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+			<uni-list>
+				<view v-for="(item,index) in deviceList" :key="index" class="view_tupian_wenzi">
+					<view class="view_wenzi2">
+						<text>设备编号</text>
+						<text class="text_small">{{item.deviceName}}</text>
 					</view>
-				</uni-list>
-			</scroll-view>
-		</view>
+					<view>
+						<uni-badge v-show="item.alarmCount!==0" @click="onClick" class="uni-badge-left-margin"
+							:text="item.alarmCount" absolute="rightTop" max-num:99 :offset="[-55, -35]" />
+					</view>
+					<view>
+						<switch class="uni-badge-left-margin" :checked="item.status"
+							@change="switchChange($event,index)" />
+					</view>
+				</view>
+			</uni-list>
+		</scroll-view>
 
 	</view>
 </template>

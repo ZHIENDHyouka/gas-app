@@ -37,3 +37,10 @@ export function submitFeedbackInfo(username,userId,describe) {
         }
     })
 }
+
+export function getFeedbackAllInfo(userId) {
+    return Request({
+        url:'app/getFeedbackAllInfo/'+userId,
+        method:'get'
+    })
+}
