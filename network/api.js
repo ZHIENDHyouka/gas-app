@@ -17,3 +17,10 @@ export function register(data) {
 		data: data
 	})
 }
+//获取设备页面信息
+export function getDeviceAllInfo() {
+	return Request({
+		url: 'app/getDeviceAllInfo',
+		method: 'get',
+	})
+}

@@ -23,7 +23,7 @@
 				<view class="forgotBtn" @click="change" v-show="!isLogin">
 					<text style="color: #409EFF;">登陆</text>
 				</view>
-			</view>
+			</view>v
 		</view>
 	</view>
 
@@ -81,7 +81,7 @@
 								success() {
 									// 页面跳转
 									uni.redirectTo({
-										url: '../index/main',
+										url: '../index/device',
 									})
 								}
 							})
