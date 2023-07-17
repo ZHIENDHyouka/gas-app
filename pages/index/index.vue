@@ -81,8 +81,8 @@
 								success() {
 									getApp().globalData.text=res.data;
 									// 页面跳转
-									uni.redirectTo({
-										url: '../index/device',
+									uni.switchTab({
+										url: '/pages/index/charts'
 									})
 								}
 							})

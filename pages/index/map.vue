@@ -2,35 +2,16 @@
 	<view class="content">
 		<view>
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
-				@scroll="scroll" class="scroll-Y">
+				@scroll="scroll" :style="{height:screenHeight + 'px'}" >
 				<template>
-					<view>
-						<view class="tarea"
-							style="width: 100%; height: 300rpx;padding-right: 40rpx;box-sizing: border-box;">
-							<textarea placeholder="请输入反馈信息"
-								style="width: 100%;height: 100%;border: 1rpx solid #cccccc; border-radius: 5rpx;padding: 20rpx;auto-height"
-								v-model="value"></textarea>
-						</view>
-						
+					<view style="padding: 20rpx;">
+						<uni-easyinput type="textarea" autoHeight v-model="value" placeholder="请输入反馈信息"></uni-easyinput>
+					</view>
+					<view >
 						<button type="primary" @click="getFeedback()">提交反馈</button>
 					</view>
 				</template>
 			</scroll-view>
-		</view>
-
-
-		<view class="bar">
-			<navigator url="/pages/index/device" open-type="redirect" hover-class="navigator-hover"
-				class="selectOption">
-				<view id="1" ref="device" style="color: #989898;">1</view>
-			</navigator>
-			<navigator url="/pages/index/charts" open-type="redirect" hover-class="navigator-hover"
-				class="selectOption">
-				<view id="2" ref="charts" style="color: #989898;">1</view>
-			</navigator>
-			<navigator url="/pages/index/map" open-type="redirect" hover-class="navigator-hover" class="selectOption">
-				<view id="3" ref="map" style="color: #409EFF;">1</view>
-			</navigator>
 		</view>
 	</view>
 </template>
@@ -56,20 +37,14 @@
 				}],
 				loadFontColor: '#409EFF',
 				destroyFontColor: '#989898',
-				value: ''
+				value: '',
+				screenHeight: ''
 			}
 		},
+		onLoad() {
+			this.screenHeight = uni.getSystemInfoSync().windowHeight
+		},
 		methods: {
-			lower: function(e) {
-				console.log(e)
-			},
-			scroll: function(e) {
-				console.log(e)
-				this.old.scrollTop = e.detail.scrollTop
-			},
-			upper: function(e) {
-				console.log(e)
-			},
 			getFeedback:function(){
 				const res = getApp().globalData.text;
 				const username = res.data.username;

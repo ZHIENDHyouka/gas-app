@@ -25,10 +25,28 @@
 			}
 		}
 	],
+	"tabBar": {
+		"list": [{
+				"pagePath": "pages/index/charts",
+				"iconPath": "static/home.png",
+				"selectedIconPath": "static/home-active.png",
+				"text": "首页"
+			}, {
+				"pagePath": "pages/index/map",
+				"iconPath": "static/feedback.png",
+				"selectedIconPath": "static/feedback-active.png",
+				"text": "反馈"
+			}, {
+				"pagePath": "pages/index/device",
+				"iconPath": "static/device.png",
+				"selectedIconPath": "static/device-active.png",
+				"text": "设备管理"
+			}]
+	},
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
+		"navigationBarTextStyle": "white",
 		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarBackgroundColor": "#306EFF",
 		"backgroundColor": "#F8F8F8"
 	},
 	"uniIdRouter": {}

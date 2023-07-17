@@ -2,24 +2,12 @@
 	<view class="content">
 		<view>
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
-				@scroll="scroll" class="scroll-Y">
+				@scroll="scroll" :style="{height:screenHeight + 'px'}">
 
 
 			</scroll-view>
 		</view>
-		<view class="bar">
-			<navigator url="/pages/index/device" open-type="redirect" hover-class="navigator-hover"
-				class="selectOption">
-				<view id="1" ref="device" style="color: #989898;">1</view>
-			</navigator>
-			<navigator url="/pages/index/charts" open-type="redirect" hover-class="navigator-hover"
-				class="selectOption">
-				<view id="2" ref="charts" style="color: #409EFF;">1</view>
-			</navigator>
-			<navigator url="/pages/index/map" open-type="redirect" hover-class="navigator-hover" class="selectOption">
-				<view id="3" ref="map" style="color: #989898;">1</view>
-			</navigator>
-		</view>
+
 	</view>
 </template>
 
@@ -42,12 +30,16 @@
 					name: 'C'
 				}],
 				loadFontColor: '#409EFF',
-				destroyFontColor: '#989898'
+				destroyFontColor: '#989898',
+				screenHeight: ''
 			}
 		},
 		// onLoad() {
 		// 	this.$refs.charts.$el.style.color = this.loadFontColor;
 		// },
+		onLoad() {
+			this.screenHeight = uni.getSystemInfoSync().windowHeight
+		},
 		updated() {
 			this.$refs.charts.$el.style.color = this.loadFontColor;
 		},
@@ -91,9 +83,5 @@
 		line-height: 100rpx;
 
 
-	}
-
-	.scroll-Y {
-		height: 1045rpx;
 	}
 </style>
