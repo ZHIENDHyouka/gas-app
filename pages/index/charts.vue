@@ -10,14 +10,14 @@
 		<view class="bar">
 			<navigator url="/pages/index/device" open-type="redirect" hover-class="navigator-hover"
 				class="selectOption">
-				<view id="1" ref="device">1</view>
+				<view id="1" ref="device" style="color: #989898;">1</view>
 			</navigator>
 			<navigator url="/pages/index/charts" open-type="redirect" hover-class="navigator-hover"
 				class="selectOption">
-				<view id="2" ref="charts">1</view>
+				<view id="2" ref="charts" style="color: #409EFF;">1</view>
 			</navigator>
 			<navigator url="/pages/index/map" open-type="redirect" hover-class="navigator-hover" class="selectOption">
-				<view id="3" ref="map">1</view>
+				<view id="3" ref="map" style="color: #989898;">1</view>
 			</navigator>
 		</view>
 	</view>
@@ -48,7 +48,7 @@
 		// onLoad() {
 		// 	this.$refs.charts.$el.style.color = this.loadFontColor;
 		// },
-		mounted() {
+		updated() {
 			this.$refs.charts.$el.style.color = this.loadFontColor;
 		},
 
@@ -81,12 +81,15 @@
 		width: 100%;
 		height: 100rpx;
 		background-color: aliceblue;
+		bottom: 0px;
+		position: absolute;
 	}
 
 	.selectOption {
 		width: 34%;
 		text-align: center;
 		line-height: 100rpx;
+
 
 	}
 

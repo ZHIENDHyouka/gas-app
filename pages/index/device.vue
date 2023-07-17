@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view>
-			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
+			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lower"
 				@scroll="scroll" class="scroll-Y">
 				<uni-list>
 					<view v-for="(item,index) in deviceList" :key="index" class="view_tupian_wenzi">
@@ -24,14 +24,14 @@
 		<view class="bar">
 			<navigator url="/pages/index/device" open-type="redirect" hover-class="navigator-hover"
 				class="selectOption">
-				<view id="1" ref="device">1</view>
+				<view id="1" ref="device" style="color: #409EFF;">1</view>
 			</navigator>
 			<navigator url="/pages/index/charts" open-type="redirect" hover-class="navigator-hover"
 				class="selectOption">
-				<view id="2" ref="charts">1</view>
+				<view id="2" ref="charts" style="color: #989898;">1</view>
 			</navigator>
 			<navigator url="/pages/index/map" open-type="redirect" hover-class="navigator-hover" class="selectOption">
-				<view id="3" ref="map">1</view>
+				<view id="3" ref="map" style="color: #989898;">1</view>
 			</navigator>
 		</view>
 	</view>
@@ -64,8 +64,11 @@
 				destroyFontColor: '#989898'
 			}
 		},
-		mounted() {
+		updated() {
 			this.$refs.device.$el.style.color = this.loadFontColor;
+		},
+		mounted() {
+
 			this.getDeviceAllInfo();
 		},
 
@@ -164,6 +167,8 @@
 		width: 100%;
 		height: 100rpx;
 		background-color: aliceblue;
+		bottom: 0px;
+		position: absolute;
 	}
 
 	.selectOption {

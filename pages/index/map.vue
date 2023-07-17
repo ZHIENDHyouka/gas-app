@@ -4,19 +4,25 @@
 			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
 				@scroll="scroll" class="scroll-Y">
 
+
+
+
+
 			</scroll-view>
 		</view>
+
+
 		<view class="bar">
 			<navigator url="/pages/index/device" open-type="redirect" hover-class="navigator-hover"
 				class="selectOption">
-				<view id="1" ref="device">1</view>
+				<view id="1" ref="device" style="color: #989898;">1</view>
 			</navigator>
 			<navigator url="/pages/index/charts" open-type="redirect" hover-class="navigator-hover"
 				class="selectOption">
-				<view id="2" ref="charts">1</view>
+				<view id="2" ref="charts" style="color: #989898;">1</view>
 			</navigator>
 			<navigator url="/pages/index/map" open-type="redirect" hover-class="navigator-hover" class="selectOption">
-				<view id="3" ref="map">1</view>
+				<view id="3" ref="map" style="color: #409EFF;">1</view>
 			</navigator>
 		</view>
 	</view>
@@ -44,13 +50,6 @@
 				destroyFontColor: '#989898'
 			}
 		},
-		mounted() {
-			this.$refs.map.$el.style.color = this.loadFontColor;
-		},
-
-		beforeDestroy() {
-			this.$refs.map.$el.style.color = this.destroyFontColor;
-		},
 		methods: {
 			lower: function(e) {
 				console.log(e)
@@ -77,6 +76,8 @@
 		width: 100%;
 		height: 100rpx;
 		background-color: aliceblue;
+		bottom: 0px;
+		position: absolute;
 	}
 
 	.selectOption {
