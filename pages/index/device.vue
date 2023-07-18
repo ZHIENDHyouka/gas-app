@@ -48,11 +48,12 @@
 
 				loadFontColor: '#409EFF',
 				destroyFontColor: '#989898',
-				screenHeight: ''
+				screenHeight: '',
+
 			}
 		},
 		onLoad() {
-			this.screenHeight = uni.getSystemInfoSync().windowHeight
+
 		},
 		mounted() {
 
@@ -61,7 +62,7 @@
 
 
 		beforeDestroy() {
-			this.$refs.device.$el.style.color = this.destroyFontColor;
+
 		},
 		methods: {
 			getDeviceAllInfo() {

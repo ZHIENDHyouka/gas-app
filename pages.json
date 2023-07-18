@@ -5,7 +5,7 @@
 			"style": {
 				"navigationBarTitleText": "平台登陆"
 			}
-		}, 
+		},
 		{
 			"path": "pages/index/device",
 			"style": {
@@ -27,21 +27,21 @@
 	],
 	"tabBar": {
 		"list": [{
-				"pagePath": "pages/index/charts",
-				"iconPath": "static/home.png",
-				"selectedIconPath": "static/home-active.png",
-				"text": "首页"
-			}, {
-				"pagePath": "pages/index/map",
-				"iconPath": "static/feedback.png",
-				"selectedIconPath": "static/feedback-active.png",
-				"text": "反馈"
-			}, {
-				"pagePath": "pages/index/device",
-				"iconPath": "static/device.png",
-				"selectedIconPath": "static/device-active.png",
-				"text": "设备管理"
-			}]
+			"pagePath": "pages/index/charts",
+			"iconPath": "static/home.png",
+			"selectedIconPath": "static/home-active.png",
+			"text": "首页"
+		}, {
+			"pagePath": "pages/index/device",
+			"iconPath": "static/device.png",
+			"selectedIconPath": "static/device-active.png",
+			"text": "设备管理"
+		}, {
+			"pagePath": "pages/index/map",
+			"iconPath": "static/feedback.png",
+			"selectedIconPath": "static/feedback-active.png",
+			"text": "反馈"
+		}]
 	},
 	"globalStyle": {
 		"navigationBarTextStyle": "white",

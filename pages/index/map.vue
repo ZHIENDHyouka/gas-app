@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
+		<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lower"
 			@scroll="scroll" :style="{height:screenHeight + 'px'}">
 			<template>
 				<view style="padding: 20rpx;height: 400rpx;">
@@ -12,14 +12,14 @@
 			</template>
 			<view style="padding: 20rpx;">
 				<uni-list>
-					<uni-list-item >
-						<view slot="body" style="flex-direction: row;align-items: center;" >
+					<uni-list-item>
+						<view slot="body" style="flex-direction: row;align-items: center;">
 							<text class="slot-text">未处理的反馈</text>
 							<uni-badge :text="total" type="primary" />
 						</view>
 					</uni-list-item>
-					<uni-list-item v-for="(item,index) in feedbacks" :key="item.id" :title="item.problemDescribe" :show-badge="true"
-						:badge-text="(index+1)" />
+					<uni-list-item v-for="(item,index) in feedbacks" :key="item.id" :title="item.problemDescribe"
+						:show-badge="true" :badge-text="(index+1)" />
 
 				</uni-list>
 			</view>
@@ -40,7 +40,7 @@
 				value: '',
 				screenHeight: '',
 				feedbacks: [],
-				total:0
+				total: 0
 			}
 		},
 		onLoad() {
@@ -55,7 +55,7 @@
 				const username = res.data.username;
 				const userId = res.data.managerId;
 				const describe = this.value
-				if(this.value===''){
+				if (this.value === '') {
 					uni.showToast({
 						title: "提交内容为空!",
 						duration: 1500,
@@ -88,8 +88,8 @@
 				const userId = res.data.managerId;
 				getFeedbackAllInfo(userId).then(res => {
 					console.log(res);
-					this.total=res.data.data.length;
-					this.feedbacks=res.data.data
+					this.total = res.data.data.length;
+					this.feedbacks = res.data.data
 				})
 			}
 		},

@@ -1,3 +1,4 @@
+import exp from 'constants'
 import {
 	Request
 } from './request.js'
@@ -26,21 +27,40 @@ export function getDeviceAllInfo() {
 }
 
 // 发送用户反馈
-export function submitFeedbackInfo(username,userId,describe) {
-    return Request({
-        url:'manager/submitFeedbackInfo',
-        method:'post',
-        data: {
-            userId:userId,
-            userName:username,
-            problemDescribe:describe
-        }
-    })
+export function submitFeedbackInfo(username, userId, describe) {
+	return Request({
+		url: 'manager/submitFeedbackInfo',
+		method: 'post',
+		data: {
+			userId: userId,
+			userName: username,
+			problemDescribe: describe
+		}
+	})
 }
 
 export function getFeedbackAllInfo(userId) {
-    return Request({
-        url:'app/getFeedbackAllInfo/'+userId,
-        method:'get'
-    })
+	return Request({
+		url: 'app/getFeedbackAllInfo/' + userId,
+		method: 'get'
+	})
+}
+
+//获取气体名称和最新数据
+export function getGasNameAndNewData() {
+	return Request({
+		url: 'app/getGasNameAndNewData',
+		method: 'get'
+	})
+}
+
+//获取统计图表初始数据
+export function getStatisticInitData(name) {
+	return Request({
+		url: 'app/getStatisticInitData',
+		method: 'post',
+		data: {
+			name: name
+		},
+	})
 }

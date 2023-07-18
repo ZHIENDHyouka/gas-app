@@ -1,17 +1,38 @@
 <template>
 	<view class="content">
-		<view>
-			<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="uppr" @scrolltolower="lower"
-				@scroll="scroll" :style="{height:screenHeight + 'px'}">
-
-
-			</scroll-view>
+		<!-- <view class="titleBar">实时数据</view> -->
+		<scroll-view :style="{height:screenHeight + 'px'}" :scroll-top="scrollTop" scroll-y="true"
+			@scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+			<view v-show="changeInfo" style="height: 930rpx;">
+				<view class="realTimePart" v-for="(item,index) in realTimeDataList" :key="index">
+					<view class="gasText">
+						<view style="font-size: 45rpx;">
+							<text>实时数据</text>
+						</view>
+						<text>{{item.name}}</text>
+					</view>
+					<view class="gasText">
+						<text class="gasValue">{{item.data}} {{symbol[item.name]}}</text>
+					</view>
+				</view>
+			</view>
+			<l-echart v-show="!changeInfo" class="chartPart" ref="chart1"></l-echart>
+			<view class="gasSelect" v-show="!changeInfo" v-for="(item,index) in gasNameList" :key="index">
+				<button @click="getGasData(item)">{{item}}</button>
+			</view>
+		</scroll-view>
+		<view style="bottom: 0px;overflow: hidden;">
+			<button @click="change">切换</button>
 		</view>
-
 	</view>
 </template>
 
 <script>
+	import * as echarts from '@/uni_modules/lime-echart/static/echarts.min'
+	import {
+		getGasNameAndNewData,
+		getStatisticInitData
+	} from '../../network/api.js'
 	export default {
 		data() {
 			return {
@@ -19,6 +40,7 @@
 				old: {
 					scrollTop: 0
 				},
+				gasNameList: [],
 				dataList: [{
 					id: "1",
 					name: 'A'
@@ -29,45 +51,197 @@
 					id: "3",
 					name: 'C'
 				}],
-				loadFontColor: '#409EFF',
-				destroyFontColor: '#989898',
-				screenHeight: ''
+				deviceList: [{
+						value: '设备1',
+						text: "设备1"
+					},
+					{
+						value: '设备2',
+						text: "设备2"
+					},
+					{
+						value: '设备3',
+						text: "设备3"
+					}
+				],
+				symbol: {
+					"温度": '℃',
+					"湿度": '%',
+					'PM10': 'μg/m^3',
+					'PM2.5': 'μg/m^3',
+					'O3': 'PPB',
+					'CO': 'PPM',
+					'SO2': 'PPM',
+					'NO2': 'PPM',
+				},
+				// socket: null,
+				deviceId: '',
+				chartLine1: null,
+				chartLine2: null,
+				screenHeight: '',
+				scrollTop: 0,
+				old: {
+					scrollTop: 0
+				},
+				changeInfo: true,
+				realTimeDataList: [],
 			}
 		},
-		// onLoad() {
-		// 	this.$refs.charts.$el.style.color = this.loadFontColor;
-		// },
 		onLoad() {
-			this.screenHeight = uni.getSystemInfoSync().windowHeight
+			this.queryInitData();
 		},
-		updated() {
-			this.$refs.charts.$el.style.color = this.loadFontColor;
-		},
-
 		beforeDestroy() {
-			this.$refs.charts.$el.style.color = this.destroyFontColor;
+			// console.log(1);
+			// uni.closeSocket();
 		},
 		methods: {
 			lower: function(e) {
-				console.log(e)
+
 			},
 			scroll: function(e) {
-				console.log(e)
+
 				this.old.scrollTop = e.detail.scrollTop
 			},
 			upper: function(e) {
-				console.log(e)
+
 			},
+			queryInitData() {
+				getGasNameAndNewData().then(res => {
+					const list = res.data.data;
+					this.realTimeDataList = list;
+					for (let s of list) {
+						this.gasNameList.push(s.name);
+						if (s.name === '湿度')
+							s.data *= 100;
+					}
+					this.socket = this.initWebSocket();
+				})
+			},
+			initWebSocket() {
+				const url = "ws://127.0.0.1:8083/webSocket";
+				const _this = this;
+				//创建连接
+				this.socket = uni.connectSocket({
+					url: url,
+					header: {
+						'content-type': 'application/json'
+					},
+					method: 'GET',
+					complete() {
+
+					}
+				});
+				uni.onSocketOpen(function(res) {
+					const id = setInterval(function() {
+						_this.sendSocketMessage("4", null);
+						console.log("发送消息!");
+					}, 1000);
+
+				})
+				uni.onSocketMessage(function(res) {
+					const result = JSON.parse(res.data);
+					// console.log(result);
+					_this.realTimeDataList.splice(0, _this.realTimeDataList.length);
+					_this.realTimeDataList = result;
+					console.log(_this.realTimeDataList);
+				});
+				uni.onSocketError(function(res) {
+					console.log('WebSocket连接打开失败，请检查！');
+				});
+				uni.onSocketClose(function(res) {
+					console.log('WebSocket 已关闭！');
+				});
+			},
+
+			sendSocketMessage(msg, data) {
+				uni.sendSocketMessage({
+					data: JSON.stringify({
+						code: msg,
+						data: data,
+					}),
+				});
+
+			},
+			scroll: function(e) {
+
+				this.old.scrollTop = e.detail.scrollTop
+			},
+			change() {
+				this.changeInfo = !this.changeInfo;
+				if (this.changeInfo === false) {
+					this.getGasData("温度");
+				}
+			},
+			async drawLineInit(dataList, dateList, name) {
+				const option = {
+					title: {
+						text: `12小时内${name}面积图`,
+						top: '10px',
+						left: 'center',
+					},
+					tooltip: {
+						trigger: 'axis'
+					},
+					xAxis: {
+						type: 'category',
+						// data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+						data: dateList,
+						axisLabel: {
+							show: false
+						},
+					},
+					yAxis: {
+						type: 'value'
+					},
+
+					grid: {
+						x: 25,
+						y: 45,
+						x2: 5,
+						y2: 20,
+						// with: 1000,
+					},
+					dataZoom: [{
+							type: 'inside',
+							start: 0,
+							end: 100,
+						},
+
+					],
+					series: [{
+						// data: [20, 30, 40, 50, 60, 70, 80],
+						data: dataList,
+						type: 'line',
+						smooth: true,
+						areaStyle: {}
+					}]
+				};
+				this.chartLine1 = await this.$refs.chart1.init(echarts);
+				// this.chartLine1.style.width = window.innerWidth + 'px' // 再增加这一行
+				console.log(111);
+				this.chartLine1.setOption(option)
+			},
+			getGasData(name) {
+				getStatisticInitData(name).then(res => {
+					console.log(res.data);
+					const dataList = [];
+					const dateList = [];
+					const list = res.data.data;
+					for (let s of list) {
+						dateList.push(s.date);
+						dataList.push(s.data);
+					}
+
+					this.drawLineInit(dataList, dateList, name);
+				})
+			}
 		},
+
 
 	}
 </script>
 
 <style>
-	.mainScroll {
-		height: 500rpx;
-	}
-
 	.bar {
 		display: flex;
 		width: 100%;
@@ -81,7 +255,89 @@
 		width: 34%;
 		text-align: center;
 		line-height: 100rpx;
+	}
+
+	.titleBar {
+		/* 圆角 */
+		border-radius: 18rpx;
+
+		/* 边 */
+		border: 1rpx solid #E0E3DA;
+		/* 阴影 */
+		box-shadow: 2rpx 6rpx 0rpx #e5e8df;
+
+		background-color: #ffffff;
+		border-color: #409EFF;
+		background-color: #ffffff;
+		background-clip: padding-box;
+		height: 90rpx;
+		width: 80%;
+		margin: auto;
+	}
+
+	.realTimePart {
+		/* 圆角 */
+		border-radius: 18rpx;
+
+		/* 边 */
+		border: 1rpx solid #E0E3DA;
+		/* 阴影 */
+		box-shadow: 2rpx 6rpx 0rpx #e5e8df;
+
+		background-color: #ffffff;
+		border-color: #409EFF;
+
+		background-clip: padding-box;
+		height: 250rpx;
+		width: 45%;
+		/* margin: auto; */
+		margin-top: 20rpx;
+		margin-left: 20rpx;
+		float: left;
+		/* background-color: #1f5ef1; */
+		background-color: #409EFF;
+	}
+
+	.gasText {
+		color: #ffffff;
+		font-family: "Microsoft YaHei";
+		font-size: 55rpx;
+		margin-left: 15rpx;
+		margin-top: 10rpx;
+	}
+
+	.gasValue {
+		font-size: 50rpx;
+		margin-top: 10rpx;
+	}
 
 
+	.chartPart {
+		margin-top: 30rpx;
+		margin-bottom: 20rpx;
+		border-radius: 15px;
+		background-clip: padding-box;
+		background-color: rgba(85, 0, 0, 0);
+		border: 1px solid rgba(79, 83, 85, 0.0);
+		box-shadow: 0 0 25px #eadac6ff;
+		border-color: lavenderblush;
+		height: 650rpx;
+		width: 90%;
+		float: left;
+		margin-left: 18rpx;
+		padding-bottom: 5rpx;
+
+		background-color: #ffffff;
+
+	}
+
+	.gasSelect {
+		/* 圆角 */
+		border-radius: 18rpx;
+		width: 20%;
+		margin-top: 20rpx;
+		margin-left: 20rpx;
+		float: left;
+		border-right: 1px solid #E0E3DA;
 	}
 </style>
