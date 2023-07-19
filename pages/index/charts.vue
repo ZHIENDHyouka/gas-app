@@ -1,7 +1,7 @@
 <template>
-	
+
 	<view class="content">
-		<view >
+		<view>
 			<button style="background-color: #ACD6FF" @click="change">切换</button>
 		</view>
 		<!-- <view class="titleBar">实时数据</view> -->
@@ -13,10 +13,11 @@
 						<view style="font-size: 45rpx;">
 							<text>实时数据</text>
 						</view>
-						<text :style="color">{{item.name}}</text>
+						<text v-if="colorchange" class="color2">{{item.name}}</text>
+						<text v-if="!colorchange" class="color1">{{item.name}}</text>
 					</view>
 					<view class="gasText">
-						<text :style="color" class="gasValue">{{item.data}} {{symbol[item.name]}}</text>
+						<text :class="color" class="gasValue">{{item.data}} {{symbol[item.name]}}</text>
 					</view>
 				</view>
 			</view>
@@ -24,9 +25,9 @@
 			<view class="gasSelect" v-show="!changeInfo" v-for="(item,index) in gasNameList" :key="index">
 				<button @click="getGasData(item,1)">{{item}}</button>
 			</view>
-			
+
 		</scroll-view>
-		
+
 
 	</view>
 </template>
@@ -35,18 +36,21 @@
 	import * as echarts from '@/uni_modules/lime-echart/static/echarts.min'
 	import {
 		getGasNameAndNewData,
-		getStatisticInitData
+		getStatisticInitData,
+		queryAllAlarmCriticalInfo
 	} from '../../network/api.js'
 	export default {
 		data() {
 			return {
-				color:"color: ",
+				color: "",
+				colorchange: true,
+				alarmCriticalInfo: [],
 				scrollTop: 0,
 				old: {
 					scrollTop: 0
 				},
 				gasNameList: [],
-				
+
 				deviceList: [{
 						value: '设备1',
 						text: "设备1"
@@ -87,12 +91,20 @@
 		onLoad() {
 			this.screenHeight = uni.getSystemInfoSync().windowHeight;
 			this.queryInitData();
+			this.queryAlarmCriticalInfo();
 		},
 		beforeDestroy() {
 			// console.log(1);
 			// uni.closeSocket();
 		},
 		methods: {
+			queryAlarmCriticalInfo() {
+				queryAllAlarmCriticalInfo().then(res => {
+					console.log(res.data.data)
+					this.alarmCriticalInfo = res.data.data;
+					console.log(this.alarmCriticalInfo);
+				})
+			},
 			lower: function(e) {
 
 			},
@@ -141,6 +153,9 @@
 					// console.log(result);
 					_this.realTimeDataList.splice(0, _this.realTimeDataList.length);
 					_this.realTimeDataList = result.realTimeData;
+					// console.log(_this.realTimeDataList[1].data)
+					// console.log(_this.realTimeDataList[1].name)
+					_this.changeColor(_this.realTimeDataList, _this.alarmCriticalInfo, _this);
 					if (result.realTimeStatistic) {
 						const x = _this.chartLine1.getOption().xAxis[0].data;
 						const y = _this.chartLine1.getOption().series[0].data;
@@ -177,6 +192,41 @@
 				uni.onSocketClose(function(res) {
 					console.log('WebSocket 已关闭！');
 				});
+			},
+
+			changeColor(realTimeDataList, alarmCriticalList, _this) {
+
+				// console.log(realTimeDataList.length)
+				// console.log(realTimeDataList[1].data)
+				// console.log(realTimeDataList[1].name)
+				// console.log(alarmCriticalList)
+				// console.log(_this.$refs)
+				// for (let s in this.alarmCriticalList) {
+				// 	if (s.name === item.name) {
+				// 		if (item.data > s.upperLimit || item.data < s.lowerLimit) {
+				// 			console.log(1)
+				// 			return true;
+				// 		} 
+				// 	}
+				// 	console.log(2)
+				// 	return false;
+				// }
+				for (let s in this.alarmCriticalList) {
+					for (let r in this.realTimeDataList) {
+						// for (let real = 0; real < realTimeDataList.lsength; real++) {
+						if (r.name == s.name) {
+							// console.log(realTimeDataList[real].data)
+							if (r.data > s.upperLimit || r.data < s.lowerLimit) {
+								// console.log(1111)
+								_this.colorchange = false
+							} else {
+								_this.colorchange = true;
+							}
+						}
+					}
+				}
+				// console.log(this.color)
+
 			},
 
 			sendSocketMessage(msg, data) {
@@ -267,6 +317,14 @@
 </script>
 
 <style>
+	.color1 {
+		color: red;
+	}
+
+	.color2 {
+		color: white;
+	}
+
 	.content {
 		background: #e0e6ec;
 		width: 100vw;
@@ -320,7 +378,7 @@
 		border-color: #409EFF; */
 		"backgroundColor": "transparent"
 
-		background-clip: padding-box;
+			background-clip: padding-box;
 		height: 240rpx;
 		width: 45%;
 		/* margin: auto; */
@@ -329,7 +387,7 @@
 		float: left;
 		/* background-color: #1f5ef1; */
 		/* background-color: #409EFF; */
-		
+
 	}
 
 	.gasText {

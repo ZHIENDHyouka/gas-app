@@ -64,3 +64,10 @@ export function getStatisticInitData(name) {
 		},
 	})
 }
+
+export function queryAllAlarmCriticalInfo() {
+	return Request({
+		url: 'alarm/queryAllAlarmCriticalInfo',
+		method: 'get'
+	})
+}
