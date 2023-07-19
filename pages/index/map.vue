@@ -1,29 +1,31 @@
 <template>
 	<view class="content">
-		<scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lower"
-			@scroll="scroll" :style="{height:screenHeight + 'px'}">
-			<template>
-				<view style="padding: 20rpx;height: 400rpx;">
-					<uni-easyinput class="v-deep" type="textarea" v-model="value" placeholder="请输入反馈信息"></uni-easyinput>
-				</view>
-				<view>
-					<button type="primary" @click="getFeedback()">提交反馈</button>
-				</view>
-			</template>
-			<view style="padding: 20rpx;">
-				<uni-list>
-					<uni-list-item>
-						<view slot="body" style="flex-direction: row;align-items: center;">
-							<text class="slot-text">未处理的反馈</text>
-							<uni-badge :text="total" type="primary" />
-						</view>
-					</uni-list-item>
-					<uni-list-item v-for="(item,index) in feedbacks" :key="item.id" :title="item.problemDescribe"
-						:show-badge="true" :badge-text="(index+1)" />
-
-				</uni-list>
+		<!-- <scroll-view :scroll-top="scrollTop" scroll-y="true" @scrolltoupper="upper" @scrolltolower="lower"
+			@scroll="scroll" > -->
+		<view :style="{height:screenHeight + 'px'}">
+		<template>
+			<view style="padding: 20rpx;height: 400rpx;">
+				<uni-easyinput class="v-deep" type="textarea" v-model="value" placeholder="请输入反馈信息"></uni-easyinput>
 			</view>
-		</scroll-view>
+			<view>
+				<button type="primary" @click="getFeedback()">提交反馈</button>
+			</view>
+		</template>
+		<view style="padding: 20rpx;">
+			<uni-list>
+				<uni-list-item>
+					<view slot="body" style="flex-direction: row;align-items: center;">
+						<text class="slot-text">未处理的反馈</text>
+						<uni-badge :text="total" type="primary" />
+					</view>
+				</uni-list-item>
+				<uni-list-item v-for="(item,index) in feedbacks" :key="item.id" :title="item.problemDescribe"
+					:show-badge="true" :badge-text="(index+1).toString()" />
+
+			</uni-list>
+		</view>
+		<!-- </scroll-view> -->
+		</view>
 	</view>
 
 </template>
@@ -104,7 +106,7 @@
 		height: 100vh;
 		background-image: url('../../static/background2.jpeg');
 	}
-	
+
 	.mainScroll {
 		height: 500rpx;
 	}

@@ -81,8 +81,6 @@
 				getDeviceAllInfo().then(res => {
 					const data = res.data.data;
 					const code = res.data.code;
-					console.log(data)
-					console.log(data.length)
 					var count = 0
 					for (let i = 0; i < data.length; i++) {
 						if (data[i].status == false) {

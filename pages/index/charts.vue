@@ -155,7 +155,7 @@
 					_this.realTimeDataList = result.realTimeData;
 					// console.log(_this.realTimeDataList[1].data)
 					// console.log(_this.realTimeDataList[1].name)
-					_this.changeColor(_this.realTimeDataList, _this.alarmCriticalInfo, _this);
+					// _this.changeColor(_this.realTimeDataList, _this.alarmCriticalInfo, _this);
 					if (result.realTimeStatistic) {
 						const x = _this.chartLine1.getOption().xAxis[0].data;
 						const y = _this.chartLine1.getOption().series[0].data;
