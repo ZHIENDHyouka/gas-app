@@ -2,7 +2,7 @@
 	<view class="content">
 		<view class="avatorWrapper">
 			<view class="avator">
-				<image class="img" src="../../static/qq.png" mode="widthFix"></image>
+				<image class="img" src="../../static/login.png" mode="widthFix"></image>
 			</view>
 		</view>
 		<view class="form">
@@ -159,6 +159,7 @@
 		background: #e0e6ec;
 		width: 100vw;
 		height: 100vh;
+		background-image: url('../../static/background.jpeg');
 	}
 
 	.avatorWrapper {

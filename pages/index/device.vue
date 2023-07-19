@@ -1,7 +1,18 @@
 <template>
 	<view class="content">
+
 		<scroll-view :style="{height:screenHeight + 'px'}" :scroll-top="scrollTop" scroll-y="true"
 			@scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
+			<uni-grid :column="3" :show-border="true" :square="false">
+				<uni-grid-item v-for="(item ,index) in list" :index="index" :key="index">
+					<view class="grid-item-box">
+						<text class="text">{{item.text}}</text>
+						<view v-if="item.badge" class="grid-dot">
+							<uni-badge size="normal" :text="item.badge" :type="item.type" />
+						</view>
+					</view>
+				</uni-grid-item>
+			</uni-grid>
 			<uni-list>
 				<view v-for="(item,index) in deviceList" :key="index" class="view_tupian_wenzi">
 					<view class="view_wenzi2">
@@ -49,11 +60,12 @@
 				loadFontColor: '#409EFF',
 				destroyFontColor: '#989898',
 				screenHeight: '',
+				list: []
 
 			}
 		},
 		onLoad() {
-
+			this.screenHeight = uni.getSystemInfoSync().windowHeight;
 		},
 		mounted() {
 
@@ -69,6 +81,32 @@
 				getDeviceAllInfo().then(res => {
 					const data = res.data.data;
 					const code = res.data.code;
+					console.log(data)
+					console.log(data.length)
+					var count = 0
+					for (let i = 0; i < data.length; i++) {
+						if (data[i].status == false) {
+							count++;
+						}
+					}
+					console.log(count)
+					this.list = [{
+							text: '设备总数',
+							badge: data.length,
+							type: "primary"
+						},
+						{
+
+							text: '在线设备',
+							badge: data.length - count,
+							type: "success"
+						},
+						{
+							text: '掉线设备',
+							badge: count,
+							type: "warning"
+						}
+					]
 					if (data && data.length > 0) {
 						this.deviceList = data;
 					}
@@ -104,6 +142,32 @@
 </script>
 
 <style>
+
+	.text {
+		font-size: 14px;
+		margin-top: 5px;
+	}
+
+	.grid-item-box {
+		flex: auto;
+		// position: relative;
+		/* #ifndef APP-NVUE */
+		display: flex;
+		/* #endif */
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 5px;
+
+	}
+
+	.content {
+		background: #e0e6ec;
+		width: 100vw;
+		height: 100vh;
+
+	}
+
 	.view_tupian_wenzi {
 		height: 120rpx;
 		display: flex;

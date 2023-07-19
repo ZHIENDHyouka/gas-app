@@ -1,7 +1,7 @@
 <script>
 	export default {
-		globalData: {  
-			text: ''  
+		globalData: {
+			text: ''
 		},
 		onLaunch: function() {
 			// console.log('App Launch')
@@ -12,7 +12,7 @@
 		onHide: function() {
 			// console.log('App Hide')
 		},
-		
+
 	}
 </script>
 

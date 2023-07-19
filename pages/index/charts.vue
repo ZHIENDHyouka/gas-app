@@ -1,18 +1,22 @@
 <template>
+	
 	<view class="content">
+		<view >
+			<button style="background-color: #ACD6FF" @click="change">切换</button>
+		</view>
 		<!-- <view class="titleBar">实时数据</view> -->
 		<scroll-view :style="{height:screenHeight + 'px'}" :scroll-top="scrollTop" scroll-y="true"
 			@scrolltoupper="upper" @scrolltolower="lower" @scroll="scroll">
-			<view v-show="changeInfo" style="height: 930rpx;">
+			<view v-show="changeInfo">
 				<view class="realTimePart" v-for="(item,index) in realTimeDataList" :key="index">
 					<view class="gasText">
 						<view style="font-size: 45rpx;">
 							<text>实时数据</text>
 						</view>
-						<text>{{item.name}}</text>
+						<text :style="color">{{item.name}}</text>
 					</view>
 					<view class="gasText">
-						<text class="gasValue">{{item.data}} {{symbol[item.name]}}</text>
+						<text :style="color" class="gasValue">{{item.data}} {{symbol[item.name]}}</text>
 					</view>
 				</view>
 			</view>
@@ -20,10 +24,10 @@
 			<view class="gasSelect" v-show="!changeInfo" v-for="(item,index) in gasNameList" :key="index">
 				<button @click="getGasData(item,1)">{{item}}</button>
 			</view>
+			
 		</scroll-view>
-		<view style="bottom: 0px;overflow: hidden;">
-			<button @click="change">切换</button>
-		</view>
+		
+
 	</view>
 </template>
 
@@ -36,21 +40,13 @@
 	export default {
 		data() {
 			return {
+				color:"color: ",
 				scrollTop: 0,
 				old: {
 					scrollTop: 0
 				},
 				gasNameList: [],
-				dataList: [{
-					id: "1",
-					name: 'A'
-				}, {
-					id: "2",
-					name: 'B'
-				}, {
-					id: "3",
-					name: 'C'
-				}],
+				
 				deviceList: [{
 						value: '设备1',
 						text: "设备1"
@@ -89,6 +85,7 @@
 			}
 		},
 		onLoad() {
+			this.screenHeight = uni.getSystemInfoSync().windowHeight;
 			this.queryInitData();
 		},
 		beforeDestroy() {
@@ -135,13 +132,13 @@
 				uni.onSocketOpen(function(res) {
 					const id = setInterval(function() {
 						_this.sendSocketMessage("4", _this.gasName);
-						console.log("发送消息!");
+						// console.log("发送消息!");
 					}, 1000);
 
 				})
 				uni.onSocketMessage(function(res) {
 					const result = JSON.parse(res.data);
-					console.log(result);
+					// console.log(result);
 					_this.realTimeDataList.splice(0, _this.realTimeDataList.length);
 					_this.realTimeDataList = result.realTimeData;
 					if (result.realTimeStatistic) {
@@ -247,7 +244,7 @@
 				};
 				this.chartLine1 = await this.$refs.chart1.init(echarts);
 				// this.chartLine1.style.width = window.innerWidth + 'px' // 再增加这一行
-				console.log(111);
+				// console.log(111);
 				this.chartLine1.setOption(option)
 			},
 			getGasData(name, flag) {
@@ -270,6 +267,13 @@
 </script>
 
 <style>
+	.content {
+		background: #e0e6ec;
+		width: 100vw;
+		height: 100vh;
+		background-image: url('../../static/background2.jpeg')
+	}
+
 	.bar {
 		display: flex;
 		width: 100%;
@@ -312,18 +316,20 @@
 		/* 阴影 */
 		box-shadow: 2rpx 6rpx 0rpx #e5e8df;
 
-		background-color: #ffffff;
-		border-color: #409EFF;
+		/* background-color: #ffffff;
+		border-color: #409EFF; */
+		"backgroundColor": "transparent"
 
 		background-clip: padding-box;
-		height: 250rpx;
+		height: 240rpx;
 		width: 45%;
 		/* margin: auto; */
 		margin-top: 20rpx;
 		margin-left: 20rpx;
 		float: left;
 		/* background-color: #1f5ef1; */
-		background-color: #409EFF;
+		/* background-color: #409EFF; */
+		
 	}
 
 	.gasText {

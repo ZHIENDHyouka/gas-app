@@ -98,6 +98,13 @@
 </script>
 
 <style>
+	.content {
+		background: #e0e6ec;
+		width: 100vw;
+		height: 100vh;
+		background-image: url('../../static/background2.jpeg');
+	}
+	
 	.mainScroll {
 		height: 500rpx;
 	}
