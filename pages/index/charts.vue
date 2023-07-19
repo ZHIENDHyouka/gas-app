@@ -18,7 +18,7 @@
 			</view>
 			<l-echart v-show="!changeInfo" class="chartPart" ref="chart1"></l-echart>
 			<view class="gasSelect" v-show="!changeInfo" v-for="(item,index) in gasNameList" :key="index">
-				<button @click="getGasData(item)">{{item}}</button>
+				<button @click="getGasData(item,1)">{{item}}</button>
 			</view>
 		</scroll-view>
 		<view style="bottom: 0px;overflow: hidden;">
@@ -85,6 +85,7 @@
 				},
 				changeInfo: true,
 				realTimeDataList: [],
+				gasName: '',
 			}
 		},
 		onLoad() {
@@ -133,17 +134,45 @@
 				});
 				uni.onSocketOpen(function(res) {
 					const id = setInterval(function() {
-						_this.sendSocketMessage("4", null);
+						_this.sendSocketMessage("4", _this.gasName);
 						console.log("发送消息!");
 					}, 1000);
 
 				})
 				uni.onSocketMessage(function(res) {
 					const result = JSON.parse(res.data);
-					// console.log(result);
+					console.log(result);
 					_this.realTimeDataList.splice(0, _this.realTimeDataList.length);
-					_this.realTimeDataList = result;
-					console.log(_this.realTimeDataList);
+					_this.realTimeDataList = result.realTimeData;
+					if (result.realTimeStatistic) {
+						const x = _this.chartLine1.getOption().xAxis[0].data;
+						const y = _this.chartLine1.getOption().series[0].data;
+						x.shift();
+						y.shift();
+						x.push(result.realTimeStatistic.date);
+						y.push(result.realTimeStatistic.data);
+						_this.chartLine1.setOption({
+							title: {
+								text: `12小时内${_this.gasName}面积图`,
+								top: '10px',
+								left: 'center',
+							},
+							xAxis: {
+								type: 'category',
+								data: x,
+								axisLabel: {
+									show: false
+								},
+							},
+							series: [{
+								data: y,
+								type: 'line',
+								smooth: true,
+								areaStyle: {}
+							}]
+
+						})
+					}
 				});
 				uni.onSocketError(function(res) {
 					console.log('WebSocket连接打开失败，请检查！');
@@ -221,23 +250,22 @@
 				console.log(111);
 				this.chartLine1.setOption(option)
 			},
-			getGasData(name) {
-				getStatisticInitData(name).then(res => {
-					console.log(res.data);
-					const dataList = [];
-					const dateList = [];
-					const list = res.data.data;
-					for (let s of list) {
-						dateList.push(s.date);
-						dataList.push(s.data);
+			getGasData(name, flag) {
+				this.gasName = name;
+				getStatisticInitData(this.gasName).then(res => {
+					if (res && res.data) {
+						const dataList = [];
+						const dateList = [];
+						const list = res.data.data;
+						for (let s of list) {
+							dateList.push(s.date);
+							dataList.push(s.data);
+						}
+						this.drawLineInit(dataList, dateList, this.gasName);
 					}
-
-					this.drawLineInit(dataList, dateList, name);
 				})
-			}
-		},
-
-
+			},
+		}
 	}
 </script>
 
@@ -307,7 +335,7 @@
 	}
 
 	.gasValue {
-		font-size: 50rpx;
+		font-size: 45rpx;
 		margin-top: 10rpx;
 	}
 
