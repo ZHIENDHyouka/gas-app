@@ -153,10 +153,8 @@
 					// console.log(result);
 					_this.realTimeDataList.splice(0, _this.realTimeDataList.length);
 					_this.realTimeDataList = result.realTimeData;
-					// console.log(_this.realTimeDataList[1].data)
-					// console.log(_this.realTimeDataList[1].name)
-					// _this.changeColor(_this.realTimeDataList, _this.alarmCriticalInfo, _this);
-					if (result.realTimeStatistic) {
+					if (result.realTimeStatistic && _this.chartLine1) {
+
 						const x = _this.chartLine1.getOption().xAxis[0].data;
 						const y = _this.chartLine1.getOption().series[0].data;
 						x.shift();
@@ -164,11 +162,7 @@
 						x.push(result.realTimeStatistic.date);
 						y.push(result.realTimeStatistic.data);
 						_this.chartLine1.setOption({
-							title: {
-								text: `12小时内${_this.gasName}面积图`,
-								top: '10px',
-								left: 'center',
-							},
+							
 							xAxis: {
 								type: 'category',
 								data: x,
@@ -194,41 +188,6 @@
 				});
 			},
 
-			changeColor(realTimeDataList, alarmCriticalList, _this) {
-
-				// console.log(realTimeDataList.length)
-				// console.log(realTimeDataList[1].data)
-				// console.log(realTimeDataList[1].name)
-				// console.log(alarmCriticalList)
-				// console.log(_this.$refs)
-				// for (let s in this.alarmCriticalList) {
-				// 	if (s.name === item.name) {
-				// 		if (item.data > s.upperLimit || item.data < s.lowerLimit) {
-				// 			console.log(1)
-				// 			return true;
-				// 		} 
-				// 	}
-				// 	console.log(2)
-				// 	return false;
-				// }
-				for (let s in this.alarmCriticalList) {
-					for (let r in this.realTimeDataList) {
-						// for (let real = 0; real < realTimeDataList.lsength; real++) {
-						if (r.name == s.name) {
-							// console.log(realTimeDataList[real].data)
-							if (r.data > s.upperLimit || r.data < s.lowerLimit) {
-								// console.log(1111)
-								_this.colorchange = false
-							} else {
-								_this.colorchange = true;
-							}
-						}
-					}
-				}
-				// console.log(this.color)
-
-			},
-
 			sendSocketMessage(msg, data) {
 				uni.sendSocketMessage({
 					data: JSON.stringify({
@@ -251,7 +210,7 @@
 			async drawLineInit(dataList, dateList, name) {
 				const option = {
 					title: {
-						text: `12小时内${name}面积图`,
+						text: `${name}实时面积图`,
 						top: '10px',
 						left: 'center',
 					},
